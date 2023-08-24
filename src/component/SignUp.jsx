@@ -44,7 +44,11 @@ const SignUp = () => {
         window.open(`${server}/auth/github`, "_self");
       };
 
-    const handleSubmit = async() => {
+    const handleSubmit = async () => {
+        if (formState.confirm_password !== formState.password)
+        {
+            return toast.error("please enter password and confirm pass same")
+            }
        await axios.post("https://xerocode-3fc9.onrender.com/api/v1/signup", formState,{ withCredentials: true,credentials: "include" })
            .then(async (response) => {
             
