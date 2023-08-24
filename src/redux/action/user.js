@@ -1,7 +1,10 @@
 import axios from "axios";
 import { server } from "../store";
 
+
+
 export const loadUser = () => async (dispatch) => {
+  
   try {
     dispatch({
       type: "loadUserRequest",
@@ -17,6 +20,7 @@ export const loadUser = () => async (dispatch) => {
       type: "loadUserSuccess",
       payload: data.user,
     });
+    
   } catch (error) {
     dispatch({
       type: "loadUserFail",
@@ -60,11 +64,11 @@ export const githubLoadUser = () => async (dispatch) => {
             },
       });
        
-  
       dispatch({
         type: "loadUserSuccess",
         payload: data.user,
       });
+      
     } catch (error) {
       dispatch({
         type: "loadUserFail",

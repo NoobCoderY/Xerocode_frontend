@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const ShowRepo = () => {
   const [checkdeployOption, setcheckdeployOption] = useState();
+  const [showGitHubRepo, setshowGitHubRepo] = useState()
   const navigate = useNavigate();
 
   const { error, message, isAuthenticated, user } = useSelector(
@@ -22,18 +23,18 @@ const ShowRepo = () => {
           "https://xerocode-3fc9.onrender.com/api/v1/usertype/getUserType",
           { id: user?._id },
           { withCredentials: true }
-        );
-        setcheckdeployOption(data);
-        console.log(data);
-        fetechGitHubRepo();
+        ).then(({data}) => {
+          fetechGitHubRepo(data);
+          setcheckdeployOption(data);
+        });
+       
       } catch (error) {
-        toast.error(error.response.data.err);
+        toast.error(error?.response?.data?.err);
       }
     }
   };
-  const fetechGitHubRepo = async () => {
-    console.log("hi");
-    if (checkdeployOption?.userType?.hostingOption==="GitHub") {
+  const fetechGitHubRepo = async (data) => {
+    if (data?.userType?.hostingOption==="GitHub") {
       let checkGithubLogin = Object.keys(user);
       let bool = false;
       for (let i = 0; i < checkGithubLogin.length; i++) {
@@ -42,12 +43,17 @@ const ShowRepo = () => {
         }
       }
       if (bool === false) {
-        const { data } = await axios.get(
+        console.log(user.name);
+        const gitrepo  = await axios.post(
           "https://xerocode-3fc9.onrender.com/api/v1/gitrepo",
-          { username: user?._name },
+          { username: user?.name },
           { withCredentials: true }
-        );
-        console.log(data, "git");
+        ).then(({data}) => {
+          setshowGitHubRepo(data)
+          console.log(data, "git");
+        })
+        
+       
       }
     }
   };
@@ -140,6 +146,16 @@ const ShowRepo = () => {
             }}
           >
             <p style={{ fontWeight: "600" }}>Github Repository usernamename</p>
+            {
+              showGitHubRepo?.map((gitrepo, index) => {
+                return (
+                  <div key={`${gitrepo}${index}`} style={{display:"flex",gap:"1rem"}}>
+                    <p style={{ fontWeight: "600" }}>{ index+1}-</p>
+                    <p style={{ fontWeight: "600" }}>{ gitrepo?.name}</p>
+                  </div>
+                )
+              })
+            }
             
           </div>
         )}
