@@ -55,7 +55,7 @@ const SignUp = () => {
                   });
                   toast.success("successfully  signed up")
                   setTimeout(() => {
-                      navigate("/")
+                      navigate("/userType")
                    },2000)
             }
             )

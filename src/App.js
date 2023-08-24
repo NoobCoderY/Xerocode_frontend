@@ -45,8 +45,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<UserType />}/>
-        <Route path='/login' element={<Login/>} />
+        <Route path='/' element={<Login />}/>
+        <Route path='/userType' element={<UserType/>} />
         <Route path='/github' element={<GitHubInstall/>} />
         <Route path='/hostingoption' element={<HostingOption />} />
         <Route path='/deployoption' element={<DeploymentOption />} />

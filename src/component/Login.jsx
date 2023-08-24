@@ -42,7 +42,7 @@ const Login = () => {
                    });
              toast.success("successfully logged in")
                 setTimeout(() => {
-                    navigate("/")
+                    navigate("/userType")
                  },2000)
              }
              )
