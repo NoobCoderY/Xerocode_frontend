@@ -4,12 +4,10 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 const ShowRepo = () => {
   const [checkdeployOption, setcheckdeployOption] = useState();
-  const [showGitHubRepo, setshowGitHubRepo] = useState()
-  const navigate = useNavigate();
+  const [showGitHubRepo, setshowGitHubRepo] = useState();
 
   const { error, message, isAuthenticated, user } = useSelector(
     (state) => state.auth
@@ -17,24 +15,24 @@ const ShowRepo = () => {
 
   const getUserType = async () => {
     if (user?._id !== undefined) {
-      try {
-        console.log(user?._id, "id");
-        const { data } = await axios.post(
+      // try {
+      const data = await axios
+        .post(
           "https://xerocode-3fc9.onrender.com/api/v1/usertype/getUserType",
           { id: user?._id },
           { withCredentials: true }
-        ).then(({data}) => {
+        )
+        .then(({ data }) => {
           fetechGitHubRepo(data);
           setcheckdeployOption(data);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.err);
         });
-       
-      } catch (error) {
-        toast.error(error?.response?.data?.err);
-      }
     }
   };
   const fetechGitHubRepo = async (data) => {
-    if (data?.userType?.hostingOption==="GitHub") {
+    if (data?.userType?.hostingOption === "GitHub") {
       let checkGithubLogin = Object.keys(user);
       let bool = false;
       for (let i = 0; i < checkGithubLogin.length; i++) {
@@ -44,16 +42,19 @@ const ShowRepo = () => {
       }
       if (bool === false) {
         console.log(user.name);
-        const gitrepo  = await axios.post(
-          "https://xerocode-3fc9.onrender.com/api/v1/gitrepo",
-          { username: user?.name },
-          { withCredentials: true }
-        ).then(({data}) => {
-          setshowGitHubRepo(data)
-          console.log(data, "git");
-        })
-        
-       
+        const gitrepo = await axios
+          .post(
+            "https://xerocode-3fc9.onrender.com/api/v1/gitrepo",
+            { username: user?.name },
+            { withCredentials: true }
+          )
+          .then(({ data }) => {
+            setshowGitHubRepo(data);
+            console.log(data);
+          })
+          .catch((err) => {
+            //  return toast.error("Please wait some time and refresh for show repo");
+          });
       }
     }
   };
@@ -142,24 +143,72 @@ const ShowRepo = () => {
               border: " 1px solid #C0C0C0",
               padding: "0.5rem 1rem 0.5rem 1rem",
               overflowY: "scroll",
-              flexDirection:"column"
+              flexWrap:"wrap",
+              gap: "0.7rem",
             }}
           >
-            <p style={{ fontWeight: "600" }}>Github Repository usernamename</p>
-            {
-              showGitHubRepo?.map((gitrepo, index) => {
-                return (
-                  <div key={`${gitrepo}${index}`} style={{display:"flex",gap:"1rem"}}>
-                    <p style={{ fontWeight: "600" }}>{ index+1}-</p>
-                    <p style={{ fontWeight: "600" }}>{ gitrepo?.name}</p>
+           
+            {showGitHubRepo?.map((gitrepo, index) => {
+              return (
+                <div
+                  key={`${gitrepo}${index}`}
+                  style={{
+                    // border: "2px solid #C0C0C0",
+                    borderRadius: "6px",
+                    padding: "1rem",
+                    boxShadow: "rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px",
+                    width:"32%",
+                    
+                  }}
+                >
+                  <div
+                    style={{ display: "flex", gap: "1.4rem", padding: "0.3rem" }}
+                  >
+                    <h5 style={{ color: "#218bff" }}>{ gitrepo?.name}</h5>
+                    <div
+                      style={{
+                        border: "1px solid #C0C0C0",
+                        fontSize: "0.8rem",
+                        padding: "0.2rem 0.4rem",
+                        fontWeight: "500",
+                        borderRadius: "10px",
+                        color: "#C0C0C0",
+                      }}
+                    >
+                      { gitrepo?.visibility}
+                    </div>
                   </div>
-                )
-              })
-            }
-            
+                  <div
+                    style={{
+                      padding: "0.2rem",
+                      display: "flex",
+                      gap: "1.5rem",
+                      marginTop: "5px",
+                    }}
+                  >
+                    <h5 style={{ color: "#218bff" }}>{ gitrepo?.language}</h5>
+                    <div style={{ cursor: "pointer" }}>
+                     <a href={""}>  <button
+                        style={{
+                          padding: "0.5rem 0.5rem",
+                          cursor: "pointer",
+                          background: "#218bff",
+                          color: "white",
+                          border: "#218bff",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Click to redirect
+                      </button></a>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
+      <Toaster />
     </div>
   );
 };

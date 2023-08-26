@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter, Route, Routes, } from "react-router-dom"
+import { BrowserRouter, Route, Routes,Navigate } from "react-router-dom"
 import GitHubInstall from './component/GitHubInstall';
 import UserType from './component/UserType';
 import HostingOption from './component/HostingOption';
@@ -25,6 +25,15 @@ function App() {
     dispatch(loadUser());
     dispatch(githubLoadUser())
   }, [dispatch]);
+  console.log(user, "yash");
+  
+  // const PrivateRoute = ({ children }) => {
+    
+  //   if (user) {
+  //     return children;
+  //   }
+  //   return <Navigate to="/" />;
+  // };
 
   useEffect(() => {
     if (error) {
