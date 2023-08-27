@@ -84,9 +84,10 @@ const UserType = () => {
 
   async function handleLogout() {
     await logout();
-    dispatch({
+   await dispatch({
       type: "logoutSuccess",
     });
+     navigate("/");
   }
 
   return (
